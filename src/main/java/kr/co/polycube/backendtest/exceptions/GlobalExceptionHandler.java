@@ -2,15 +2,14 @@ package kr.co.polycube.backendtest.exceptions;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
@@ -35,16 +34,10 @@ public class GlobalExceptionHandler {
         return getErrorResponseResponseEntity(HttpStatus.BAD_REQUEST, reason, request);
     }
 
-    // 매개변수와 DTO 객체 간 바인딩 실패한 경우
-    @ExceptionHandler(BindException.class)
-    public ResponseEntity<ErrorResponse> handleBindException(BindException ex, WebRequest request) {
-        List<String> errorMessages = ex.getBindingResult()
-                .getAllErrors()
-                .stream()
-                .map(error -> error.getDefaultMessage())
-                .collect(Collectors.toList());
-
-        String reason = String.join(", ", errorMessages);
+    // 매개변수 타입이 일치하지 않는 경우
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex, WebRequest request) {
+        String reason = ex.getMostSpecificCause().getMessage();
         return getErrorResponseResponseEntity(HttpStatus.BAD_REQUEST, reason, request);
     }
 
@@ -53,12 +46,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, WebRequest request) {
         String reason = ex.getMostSpecificCause().getMessage();
         return getErrorResponseResponseEntity(HttpStatus.BAD_REQUEST, reason, request);
-    }
-
-    // 일반적인 BAD_REQUEST 경우
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException ex, WebRequest request) {
-        return getErrorResponseResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
     }
 
     // 404 에러 처리
