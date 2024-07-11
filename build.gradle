@@ -26,6 +26,11 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    runtimeOnly 'com.h2database:h2' // h2 데이터베이스 사용
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // CRUD 등 반복적인 SQL문 작업 최소화
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // DTO 객체에 저장되는 매개변수 검증
+    implementation 'org.springframework.boot:spring-boot-starter-aop' // AOP를 활용한 로깅
 }
 
 tasks.named('test') {
