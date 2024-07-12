@@ -5,17 +5,15 @@ import kr.co.polycube.backendtest.users.UserEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Setter
 @Getter
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserResponseDto {
 
-    Long id;
+    private Long id;
 
-    String name;
+    private String name;
 
     @Builder
     private UserResponseDto(Long id, String name) {
