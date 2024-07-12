@@ -31,6 +31,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // CRUD 등 반복적인 SQL문 작업 최소화
     implementation 'org.springframework.boot:spring-boot-starter-validation' // DTO 객체에 저장되는 매개변수 검증
     implementation 'org.springframework.boot:spring-boot-starter-aop' // AOP를 활용한 로깅
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    testImplementation 'org.springframework.batch:spring-batch-test' // Lotto 당첨 검수를 위한 Batch 처리
+
+
 }
 
 tasks.named('test') {
