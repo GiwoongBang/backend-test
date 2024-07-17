@@ -4,8 +4,8 @@ import kr.co.polycube.backendtest.lottos.dto.LottoResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 @RequiredArgsConstructor
 @Service
@@ -14,12 +14,14 @@ public class LottoService {
     private final LottoRepository lottoRepository;
 
     public LottoResponseDto issueLotto() {
-        Set<Integer> numbeers = new HashSet<>();
-        while (numbeers.size() < 6) {
+        Set<Integer> setNumbers = new TreeSet<>();
+        while (setNumbers.size() < 6) {
             int num = (int) (Math.random() * 45) + 1;
-            numbeers.add(num);
+            setNumbers.add(num);
         }
-        LottoEntity issuedLotto = new LottoEntity(numbeers);
+
+        Integer[] numbers = setNumbers.toArray(new Integer[6]);
+        LottoEntity issuedLotto = new LottoEntity(numbers);
         lottoRepository.save(issuedLotto);
         LottoResponseDto resData = LottoResponseDto.of(issuedLotto);
 

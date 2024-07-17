@@ -2,6 +2,9 @@ package kr.co.polycube.backendtest.lottos;
 
 import kr.co.polycube.backendtest.BackendTestApplication;
 import kr.co.polycube.backendtest.lottos.batch.LottoBatchConfiguration;
+import kr.co.polycube.backendtest.lottos.winners.WinnerEntity;
+import kr.co.polycube.backendtest.lottos.winners.WinnerRepository;
+import kr.co.polycube.backendtest.lottos.winners.WinnerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.Job;
@@ -16,9 +19,6 @@ import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,9 +47,9 @@ public class LottoBatchConfigurationTest {
         lottoRepository.deleteAll();
         winnerRepository.deleteAll();
 
-        Set<Integer> lottoNumbers1 = new HashSet<>(Set.of(1, 2, 3, 4, 5, 6));
-        Set<Integer> lottoNumbers2 = new HashSet<>(Set.of(3, 4, 5, 6, 7, 8));
-        Set<Integer> lottoNumbers3 = new HashSet<>(Set.of(7, 8, 9, 10, 11, 12));
+        Integer[] lottoNumbers1 = {1, 2, 3, 4, 5, 6};
+        Integer[] lottoNumbers2 = {3, 4, 5, 6, 7, 8};
+        Integer[] lottoNumbers3 = {7, 8, 9, 10, 11, 12};
         lottoRepository.save(new LottoEntity(lottoNumbers1));
         lottoRepository.save(new LottoEntity(lottoNumbers2));
         lottoRepository.save(new LottoEntity(lottoNumbers3));

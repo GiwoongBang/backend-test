@@ -1,6 +1,9 @@
 package kr.co.polycube.backendtest.lottos.batch;
 
 import kr.co.polycube.backendtest.lottos.*;
+import kr.co.polycube.backendtest.lottos.winners.WinnerEntity;
+import kr.co.polycube.backendtest.lottos.winners.WinnerRepository;
+import kr.co.polycube.backendtest.lottos.winners.WinnerService;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -17,9 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.Set;
@@ -81,8 +86,15 @@ public class LottoBatchConfiguration {
             Set<Integer> winningNumbers = winnerService.getWinningNumbers();
 
             // 로또 번호와 당첨 번호를 비교하여 일치하는 번호의 개수 계산
-            Set<Integer> lottoNums = lotto.getNumbers();
-            int matchCount = (int) lottoNums.stream().filter(winningNumbers::contains).count();
+            LottoEntity issuedLotto = lottoRepository.findById(lotto.getId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "유저를 찾을 수 없습니다."));
+
+            int matchCount = 0;
+            for (Integer number : issuedLotto.getNumbers()) {
+                if (winningNumbers.contains(number)) {
+                    matchCount++;
+                }
+            }
 
             // 등수 계산
             int rank = calculateRank(matchCount);
