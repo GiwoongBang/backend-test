@@ -1,7 +1,10 @@
 package kr.co.polycube.backendtest.exceptions;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
+@MockBean(JpaMetamodelMappingContext.class)
 public class GlobalExceptionHandler {
 
     // 400 에러 처리
@@ -61,21 +65,30 @@ public class GlobalExceptionHandler {
         return getErrorResponseResponseEntity((HttpStatus) ex.getStatusCode(), ex.getReason(), request);
     }
 
-    @Setter
     @Getter
+    @RequiredArgsConstructor
     public static class ErrorResponse {
         private LocalDateTime timestamp;
         private int status;
         private String reason;
         private String path;
+
+        @Builder
+        public ErrorResponse(LocalDateTime timestamp, int status, String reason, String path) {
+            this.timestamp = timestamp;
+            this.status = status;
+            this.reason = reason;
+            this.path = path;
+        }
     }
 
     private static ResponseEntity<ErrorResponse> getErrorResponseResponseEntity(HttpStatus httpStatus, String ex, WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setTimestamp(LocalDateTime.now());
-        errorResponse.setStatus(httpStatus.value());
-        errorResponse.setReason(ex);
-        errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(httpStatus.value())
+                .reason(ex)
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
 
         return new ResponseEntity<>(errorResponse, httpStatus);
     }
