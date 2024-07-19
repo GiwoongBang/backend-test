@@ -1,4 +1,4 @@
-package kr.co.polycube.backendtest.lottos;
+package kr.co.polycube.backendtest.lottos.winners;
 
 import jakarta.persistence.*;
 import lombok.Getter;

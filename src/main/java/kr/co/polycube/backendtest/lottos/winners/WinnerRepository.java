@@ -1,4 +1,4 @@
-package kr.co.polycube.backendtest.lottos;
+package kr.co.polycube.backendtest.lottos.winners;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
