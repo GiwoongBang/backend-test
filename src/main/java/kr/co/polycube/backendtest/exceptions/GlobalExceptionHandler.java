@@ -3,8 +3,6 @@ package kr.co.polycube.backendtest.exceptions;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -21,7 +19,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
-@MockBean(JpaMetamodelMappingContext.class)
 public class GlobalExceptionHandler {
 
     // 400 에러 처리
