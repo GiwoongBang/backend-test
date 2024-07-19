@@ -1,11 +1,15 @@
 package kr.co.polycube.backendtest.filters;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class UrlFilter implements Filter {
@@ -30,11 +34,17 @@ public class UrlFilter implements Filter {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(
-                    "{\"timestamp\":\"" + LocalDateTime.now() + "\","
-                            + "\"status\":400,"
-                            + "\"reason\":\"유효한 URI가 아닙니다. 특수문자 포함 여부를 확인하세요.\","
-                            + "\"path\":\"" + request.getRequestURI() + "\"}");
+
+            Map<String, Object> errorDetails = new HashMap<>();
+            errorDetails.put("timestamp", LocalDateTime.now().toString());
+            errorDetails.put("status", HttpStatus.BAD_REQUEST.value());
+            errorDetails.put("reason", "유효한 URI가 아닙니다. 특수문자 포함 여부를 확인하세요.");
+            errorDetails.put("path", request.getRequestURI());
+
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonResponse = mapper.writeValueAsString(errorDetails);
+
+            response.getWriter().write(jsonResponse);
             return;
         }
 

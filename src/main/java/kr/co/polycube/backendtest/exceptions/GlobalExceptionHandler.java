@@ -56,10 +56,16 @@ public class GlobalExceptionHandler {
         return getErrorResponseResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage(), request);
     }
 
-    // 기타 비즈니스 로직에서 발생한 에러 처리하는 경우(ex. User 조회(getUser) 시, 확인되는 유저가 없는 경우)
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ErrorResponse> handleResponseStatusException(ResponseStatusException ex, WebRequest request) {
         return getErrorResponseResponseEntity((HttpStatus) ex.getStatusCode(), ex.getReason(), request);
+    }
+
+    // 500 에러 처리
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleAllExceptions(Exception ex, WebRequest request) {
+        String reason = ex.getMessage() != null ? ex.getMessage() : "Internal Server Error";
+        return getErrorResponseResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, reason, request);
     }
 
     @Getter
